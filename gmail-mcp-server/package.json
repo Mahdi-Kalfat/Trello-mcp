@@ -1,0 +1,35 @@
+{
+  "name": "@yourusername/gmail-mcp-server",
+  "version": "1.0.0",
+  "description": "A self-hosted Model Context Protocol (MCP) server for Gmail integration with LLM agent support",
+  "main": "build/client.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node build/server.js",
+    "start:client": "cross-env node build/client.js",
+    "dev": "ts-node src/client.ts"
+  },
+  "dependencies": {
+    "@googleapis/gmail": "^2.0.0",
+    "google-auth-library": "^9.0.0",
+    "zod": "^3.21.4",
+    "limiter": "^2.1.0",
+    "winston": "^3.8.2",
+    "dotenv": "^16.0.3",
+    "cross-env": "^7.0.3"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.4",
+    "ts-node": "^10.9.1"
+  },
+  "license": "MIT",
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "gmail",
+    "api",
+    "integration",
+    "email-management",
+    "llm-agent"
+  ]
+}
