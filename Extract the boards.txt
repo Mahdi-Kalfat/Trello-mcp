@@ -1,0 +1,125 @@
+import json
+import re
+import subprocess
+import os
+
+def parse_boards_output(output: str) -> str:
+    """
+    Parse raw get_boards tool output to extract id and name of each board.
+    
+    Args:
+        output (str): Raw output from the get_boards tool, including JSON and possible non-JSON lines.
+    
+    Returns:
+        str: JSON string in the format {"result": [{"id": "...", "name": "..."}, ...]}.
+             Returns {"result": []} if parsing fails or no valid boards are found.
+    """
+    if not output.strip():
+        return json.dumps({"result": []})
+
+    # Clean non-JSON lines: Start from '[INFO] Result: {' and collect until matching '}'
+    lines = output.splitlines()
+    json_lines = []
+    brace_count = 0
+    in_result = False
+    for line in lines:
+        line = line.strip()
+        if not line:
+            continue
+        if '[INFO] Result:' in line and '{' in line:
+            in_result = True
+            # Start from the '{' in '[INFO] Result: {'
+            json_start = line.find('{')
+            json_lines.append(line[json_start:])
+            brace_count += line[json_start:].count('{') + line[json_start:].count('[')
+        elif in_result:
+            json_lines.append(line)
+            brace_count += line.count('{') + line.count('[')
+            brace_count -= line.count('}') + line.count(']')
+            if brace_count <= 0:
+                in_result = False
+    cleaned_output = '\n'.join(json_lines).strip()
+
+    if not cleaned_output:
+        return json.dumps({"result": []})
+
+    # Try parsing JSON
+    try:
+        parsed = json.loads(cleaned_output)
+        boards = []
+        if isinstance(parsed, dict) and "result" in parsed and isinstance(parsed["result"], list):
+            boards = parsed["result"]
+        elif isinstance(parsed, list):
+            boards = parsed
+        else:
+            return json.dumps({"result": []})
+
+        # Extract id and name fields
+        boards_cache = [
+            {"id": board["id"], "name": board["name"]}
+            for board in boards
+            if isinstance(board, dict) and "id" in board and "name" in board
+        ]
+        return json.dumps({"result": boards_cache})
+
+    except json.JSONDecodeError:
+        # Fallback: Try regex to extract "result" array
+        match = re.search(r'"result"\s*:\s*(\[(?:[^][{}]+|\{(?:[^{}]+|\{[^{}]*\})*\}|\[(?:[^][{}]+|\{[^{}]*\}|\[[^][{}]*\])*\])*?\])', output, re.DOTALL)
+        if match:
+            try:
+                boards = json.loads(match.group(1))
+                boards_cache = [
+                    {"id": board["id"], "name": board["name"]}
+                    for board in boards
+                    if isinstance(board, dict) and "id" in board and "name" in board
+                ]
+                return json.dumps({"result": boards_cache})
+            except json.JSONDecodeError:
+                pass
+        return json.dumps({"result": []})
+
+def run_get_boards() -> str:
+    """
+    Run the get_boards tool using npm in the trello-mcp-server directory.
+    
+    Returns:
+        str: Raw output from the get_boards tool or error message if execution fails.
+    """
+    # Specify the path to trello-mcp-server (sibling to trello-mcp-agent)
+    server_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'trello-mcp-server'))
+    
+    # Check if the directory exists
+    if not os.path.isdir(server_dir):
+        return f"Error: Directory {server_dir} does not exist or is not a directory."
+
+    try:
+        # Run the command: npm run start:client get_boards {}
+        result = subprocess.run(
+            'npm run start:client get_boards {}',
+            cwd=server_dir,
+            shell=True,
+            capture_output=True,
+            text=True,
+            check=True
+        )
+        # Combine stdout and stderr to capture all output (including [INFO] and errors)
+        return result.stdout + "\n" + result.stderr
+    except subprocess.CalledProcessError as e:
+        return f"Error executing get_boards: {e.stderr}"
+    except FileNotFoundError:
+        return "Error: npm not installed or command not found"
+
+def main():
+    """
+    Run the get_boards tool and output only the array of board id and name.
+    """
+    raw_output = run_get_boards()
+    if "Error" in raw_output:
+        print(json.dumps([]))
+        return
+    result = parse_boards_output(raw_output)
+    parsed = json.loads(result)
+    print(json.dumps(parsed["result"], indent=2))
+
+if __name__ == "__main__":
+    main()

@@ -1,0 +1,1415 @@
+[
+    {
+        "name": "get_boards",
+        "description": "Retrieve a list of boards for the authenticated user. Use this to see all boards you have access to.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "filter": {
+                    "type": "string",
+                    "enum": ["all", "closed", "members", "open", "organization", "public", "starred"],
+                    "description": "Filter boards by status or membership"
+                },
+                "fields": {
+                    "type": "array",
+                    "items": { "type": "string" },
+                    "description": "Specific fields to include in the response (default: all fields)"
+                }
+            }
+        }
+    },
+    {
+        "name": "create_board",
+        "description": "Create a new board with the specified properties. Use this tool to start a new project or workspace.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "Name of the board"
+                },
+                "desc": {
+                    "type": "string",
+                    "description": "Description of the board"
+                },
+                "idOrganization": {
+                    "type": "string",
+                    "description": "ID of the organization the board should belong to"
+                },
+                "prefs_permissionLevel": {
+                    "type": "string",
+                    "enum": ["org", "private", "public"],
+                    "description": "Permission level for the board"
+                },
+                "prefs_voting": {
+                    "type": "string",
+                    "enum": ["disabled", "members", "org", "public"],
+                    "description": "Who can vote on the board"
+                },
+                "prefs_comments": {
+                    "type": "string",
+                    "enum": ["disabled", "members", "org", "public"],
+                    "description": "Who can comment on the board"
+                },
+                "prefs_invitations": {
+                    "type": "string",
+                    "enum": ["admins", "members"],
+                    "description": "Who can invite members to the board"
+                },
+                "prefs_selfJoin": {
+                    "type": "boolean",
+                    "description": "Whether members can join the board themselves"
+                },
+                "prefs_cardCovers": {
+                    "type": "boolean",
+                    "description": "Whether card covers are enabled"
+                },
+                "prefs_background": {
+                    "type": "string",
+                    "description": "Background for the board (color or URL)"
+                },
+                "prefs_cardAging": {
+                    "type": "string",
+                    "enum": ["pirate", "regular"],
+                    "description": "Card aging style"
+                }
+            },
+            "required": ["name"]
+        }
+    },
+    {
+        "name": "get_board",
+        "description": "Retrieve detailed information about a specific board by ID. Use this when you need comprehensive details about a particular board.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "boardId": {
+                    "type": "string",
+                    "description": "ID of the board to retrieve"
+                },
+                "fields": {
+                    "type": "array",
+                    "items": { "type": "string" },
+                    "description": "Specific fields to include in the response (default: all fields)"
+                }
+            },
+            "required": ["boardId"]
+        }
+    },
+    {
+        "name": "update_board",
+        "description": "Update an existing board with new properties. Use this tool to modify board details or settings.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "boardId": {
+                    "type": "string",
+                    "description": "ID of the board to update"
+                },
+                "name": {
+                    "type": "string",
+                    "description": "New name for the board"
+                },
+                "desc": {
+                    "type": "string",
+                    "description": "New description for the board"
+                },
+                "closed": {
+                    "type": "boolean",
+                    "description": "Whether the board is closed (archived)"
+                },
+                "subscribed": {
+                    "type": "boolean",
+                    "description": "Whether the authenticated user is subscribed to the board"
+                },
+                "prefs_permissionLevel": {
+                    "type": "string",
+                    "enum": ["org", "private", "public"],
+                    "description": "New permission level for the board"
+                },
+                "prefs_voting": {
+                    "type": "string",
+                    "enum": ["disabled", "members", "org", "public"],
+                    "description": "Who can vote on the board"
+                },
+                "prefs_comments": {
+                    "type": "string",
+                    "enum": ["disabled", "members", "org", "public"],
+                    "description": "Who can comment on the board"
+                },
+                "prefs_invitations": {
+                    "type": "string",
+                    "enum": ["admins", "members"],
+                    "description": "Who can invite members to the board"
+                },
+                "prefs_selfJoin": {
+                    "type": "boolean",
+                    "description": "Whether members can join the board themselves"
+                },
+                "prefs_cardCovers": {
+                    "type": "boolean",
+                    "description": "Whether card covers are enabled"
+                },
+                "prefs_background": {
+                    "type": "string",
+                    "description": "New background for the board (color or URL)"
+                },
+                "prefs_cardAging": {
+                    "type": "string",
+                    "enum": ["pirate", "regular"],
+                    "description": "New card aging style"
+                }
+            },
+            "required": ["boardId"]
+        }
+    },
+    {
+        "name": "delete_board",
+        "description": "Permanently delete a board. Use this tool with caution as deletion cannot be undone.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "boardId": {
+                    "type": "string",
+                    "description": "ID of the board to delete"
+                },
+                "confirm": {
+                    "type": "boolean",
+                    "description": "Confirmation flag to prevent accidental deletion"
+                }
+            },
+            "required": ["boardId", "confirm"]
+        }
+    },
+    {
+        "name": "get_board_lists",
+        "description": "Get all lists on a board. Use this tool to see the lists available on a board.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "boardId": {
+                    "type": "string",
+                    "description": "ID of the board"
+                },
+                "filter": {
+                    "type": "string",
+                    "enum": ["all", "closed", "open"],
+                    "description": "Filter lists by status (default: all)"
+                }
+            },
+            "required": ["boardId"]
+        }
+    },
+    {
+        "name": "get_board_cards",
+        "description": "Get all cards on a board. Use this tool to see all cards across all lists on a board.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "boardId": {
+                    "type": "string",
+                    "description": "ID of the board"
+                },
+                "filter": {
+                    "type": "string",
+                    "enum": ["all", "closed", "none", "open", "visible"],
+                    "description": "Filter cards by status (default: all)"
+                }
+            },
+            "required": ["boardId"]
+        }
+    },
+    {
+        "name": "get_board_members",
+        "description": "Get all members of a board. Use this tool to see who has access to a board.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "boardId": {
+                    "type": "string",
+                    "description": "ID of the board"
+                }
+            },
+            "required": ["boardId"]
+        }
+    },
+    {
+        "name": "get_board_labels",
+        "description": "Get all labels on a board. Use this tool to see the available labels on a board.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "boardId": {
+                    "type": "string",
+                    "description": "ID of the board"
+                }
+            },
+            "required": ["boardId"]
+        }
+    },
+    {
+        "name": "get_card",
+        "description": "Retrieve detailed information about a specific card by ID. Use this when you need comprehensive details about a particular card.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "cardId": {
+                    "type": "string",
+                    "description": "ID of the card to retrieve"
+                },
+                "fields": {
+                    "type": "array",
+                    "items": { "type": "string" },
+                    "description": "Specific fields to include in the response (default: all fields)"
+                }
+            },
+            "required": ["cardId"]
+        }
+    },
+    {
+        "name": "create_card",
+        "description": "Create a new card on a list. Use this tool to add a new task or item to a list.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "listId": {
+                    "type": "string",
+                    "description": "ID of the list the card should belong to"
+                },
+                "name": {
+                    "type": "string",
+                    "description": "Name of the card"
+                },
+                "desc": {
+                    "type": "string",
+                    "description": "Description of the card"
+                },
+                "pos": {
+                    "type": ["string", "number"],
+                    "description": "Position of the card (top, bottom, or a positive number)"
+                },
+                "due": {
+                    "type": ["string", "null"],
+                    "description": "Due date for the card (ISO-8601 format, e.g., 2023-12-31T12:00:00Z), or null"
+                },
+                "idMembers": {
+                    "type": "array",
+                    "items": { "type": "string" },
+                    "description": "Array of member IDs to assign to the card"
+                },
+                "idLabels": {
+                    "type": "array",
+                    "items": { "type": "string" },
+                    "description": "Array of label IDs to add to the card"
+                }
+            },
+            "required": ["listId", "name"]
+        }
+    },
+    {
+        "name": "update_card",
+        "description": "Update an existing card with new properties. Use this tool to modify card details or move it to a new list or board.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "cardId": {
+                    "type": "string",
+                    "description": "ID of the card to update"
+                },
+                "name": {
+                    "type": "string",
+                    "description": "New name for the card"
+                },
+                "desc": {
+                    "type": "string",
+                    "description": "New description for the card"
+                },
+                "pos": {
+                    "type": ["string", "number"],
+                    "description": "New position for the card (top, bottom, or a positive number)"
+                },
+                "due": {
+                    "type": ["string", "null"],
+                    "description": "New due date for the card (ISO-8601 format, e.g., 2023-12-31T12:00:00Z), or null to remove"
+                },
+                "idList": {
+                    "type": "string",
+                    "description": "ID of the new list to move the card to"
+                },
+                "idBoard": {
+                    "type": "string",
+                    "description": "ID of the new board to move the card to"
+                },
+                "idMembers": {
+                    "type": "array",
+                    "items": { "type": "string" },
+                    "description": "Array of member IDs to assign to the card"
+                },
+                "idLabels": {
+                    "type": "array",
+                    "items": { "type": "string" },
+                    "description": "Array of label IDs to add to the card"
+                },
+                "closed": {
+                    "type": "boolean",
+                    "description": "Whether the card is closed (archived)"
+                },
+                "subscribed": {
+                    "type": "boolean",
+                    "description": "Whether the authenticated user is subscribed to the card"
+                }
+            },
+            "required": ["cardId"]
+        }
+    },
+    {
+        "name": "delete_card",
+        "description": "Delete a card. Use this tool to remove a card from a list.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "cardId": {
+                    "type": "string",
+                    "description": "ID of the card to delete"
+                }
+            },
+            "required": ["cardId"]
+        }
+    },
+    {
+        "name": "add_comment",
+        "description": "Add a comment to a card. Use this tool to add notes or updates to a card.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "cardId": {
+                    "type": "string",
+                    "description": "ID of the card"
+                },
+                "text": {
+                    "type": "string",
+                    "description": "Text of the comment"
+                }
+            },
+            "required": ["cardId", "text"]
+        }
+    },
+    {
+        "name": "update_comment",
+        "description": "Update a comment on a card. Use this tool to edit an existing comment.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "cardId": {
+                    "type": "string",
+                    "description": "ID of the card"
+                },
+                "commentId": {
+                    "type": "string",
+                    "description": "ID of the comment to update"
+                },
+                "text": {
+                    "type": "string",
+                    "description": "New text for the comment"
+                }
+            },
+            "required": ["cardId", "commentId", "text"]
+        }
+    },
+    {
+        "name": "add_member_to_card",
+        "description": "Add a member to a card. Use this tool to assign a task to a user.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "cardId": {
+                    "type": "string",
+                    "description": "ID of the card"
+                },
+                "memberId": {
+                    "type": "string",
+                    "description": "ID of the member to add"
+                }
+            },
+            "required": ["cardId", "memberId"]
+        }
+    },
+    {
+        "name": "remove_member_from_card",
+        "description": "Remove a member from a card. Use this tool to unassign a user from a task.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "cardId": {
+                    "type": "string",
+                    "description": "ID of the card"
+                },
+                "memberId": {
+                    "type": "string",
+                    "description": "ID of the member to remove"
+                }
+            },
+            "required": ["cardId", "memberId"]
+        }
+    },
+    {
+        "name": "get_checklist",
+        "description": "Retrieve detailed information about a specific checklist by ID. Use this when you need comprehensive details about a particular checklist.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "checklistId": {
+                    "type": "string",
+                    "description": "ID of the checklist to retrieve"
+                }
+            },
+            "required": ["checklistId"]
+        }
+    },
+    {
+        "name": "create_checklist",
+        "description": "Create a new checklist on a card. Use this tool when you need to add a new checklist to a card for tracking subtasks.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "cardId": {
+                    "type": "string",
+                    "description": "ID of the card"
+                },
+                "name": {
+                    "type": "string",
+                    "description": "Name of the checklist"
+                },
+                "pos": {
+                    "type": ["string", "number"],
+                    "description": "Position of the checklist (top, bottom, or a positive number)"
+                },
+                "idChecklistSource": {
+                    "type": "string",
+                    "description": "ID of a checklist to copy from"
+                }
+            },
+            "required": ["cardId", "name"]
+        }
+    },
+    {
+        "name": "update_checklist",
+        "description": "Update an existing checklist with new properties. Use this tool to modify a checklist's name or position.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "checklistId": {
+                    "type": "string",
+                    "description": "ID of the checklist to update"
+                },
+                "name": {
+                    "type": "string",
+                    "description": "New name for the checklist"
+                },
+                "pos": {
+                    "type": ["string", "number"],
+                    "description": "New position for the checklist (top, bottom, or a positive number)"
+                }
+            },
+            "required": ["checklistId"]
+        }
+    },
+    {
+        "name": "delete_checklist",
+        "description": "Delete a checklist. Use this tool to remove a checklist from a card.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "checklistId": {
+                    "type": "string",
+                    "description": "ID of the checklist to delete"
+                }
+            },
+            "required": ["checklistId"]
+        }
+    },
+    {
+        "name": "get_checkitems",
+        "description": "Get all checkitems on a checklist. Use this tool to see the items in a checklist.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "checklistId": {
+                    "type": "string",
+                    "description": "ID of the checklist"
+                }
+            },
+            "required": ["checklistId"]
+        }
+    },
+    {
+        "name": "create_checkitem",
+        "description": "Create a new checkitem on a checklist. Use this tool to add a new item to a checklist.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "checklistId": {
+                    "type": "string",
+                    "description": "ID of the checklist"
+                },
+                "name": {
+                    "type": "string",
+                    "description": "Name of the checkitem"
+                },
+                "pos": {
+                    "type": ["string", "number"],
+                    "description": "Position of the checkitem (top, bottom, or a positive number)"
+                },
+                "checked": {
+                    "type": "boolean",
+                    "description": "Whether the checkitem is checked"
+                },
+                "due": {
+                    "type": "string",
+                    "description": "Due date for the checkitem (ISO-8601 format, e.g., 2023-12-31T12:00:00Z)"
+                },
+                "memberId": {
+                    "type": "string",
+                    "description": "ID of the member assigned to the checkitem"
+                }
+            },
+            "required": ["checklistId", "name"]
+        }
+    },
+    {
+        "name": "get_checkitem",
+        "description": "Get a specific checkitem on a checklist. Use this tool to get details about a particular checkitem.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "checklistId": {
+                    "type": "string",
+                    "description": "ID of the checklist"
+                },
+                "checkItemId": {
+                    "type": "string",
+                    "description": "ID of the checkitem"
+                }
+            },
+            "required": ["checklistId", "checkItemId"]
+        }
+    },
+    {
+        "name": "update_checkitem",
+        "description": "Update a checkitem on a checklist. Use this tool to modify a checkitem's name, state, position, due date, or assigned member.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "checklistId": {
+                    "type": "string",
+                    "description": "ID of the checklist"
+                },
+                "checkItemId": {
+                    "type": "string",
+                    "description": "ID of the checkitem"
+                },
+                "name": {
+                    "type": "string",
+                    "description": "New name for the checkitem"
+                },
+                "state": {
+                    "type": "string",
+                    "enum": ["complete", "incomplete"],
+                    "description": "New state for the checkitem"
+                },
+                "pos": {
+                    "type": ["string", "number"],
+                    "description": "New position for the checkitem (top, bottom, or a positive number)"
+                },
+                "due": {
+                    "type": ["string", "null"],
+                    "description": "New due date for the checkitem (ISO-8601 format, e.g., 2023-12-31T12:00:00Z), or null to remove"
+                },
+                "idMember": {
+                    "type": ["string", "null"],
+                    "description": "ID of the member to assign to the checkitem, or null to remove"
+                }
+            },
+            "required": ["checklistId", "checkItemId"]
+        }
+    },
+    {
+        "name": "delete_checkitem",
+        "description": "Delete a checkitem from a checklist. Use this tool to remove an item from a checklist.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "checklistId": {
+                    "type": "string",
+                    "description": "ID of the checklist"
+                },
+                "checkItemId": {
+                    "type": "string",
+                    "description": "ID of the checkitem to delete"
+                }
+            },
+            "required": ["checklistId", "checkItemId"]
+        }
+    },
+    {
+        "name": "update_checklist_name",
+        "description": "Update the name of a checklist. Use this tool to rename a checklist.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "checklistId": {
+                    "type": "string",
+                    "description": "ID of the checklist"
+                },
+                "name": {
+                    "type": "string",
+                    "description": "New name for the checklist"
+                }
+            },
+            "required": ["checklistId", "name"]
+        }
+    },
+    {
+        "name": "update_checklist_position",
+        "description": "Update the position of a checklist on a card. Use this tool to reorder checklists on a card.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "checklistId": {
+                    "type": "string",
+                    "description": "ID of the checklist"
+                },
+                "position": {
+                    "type": ["string", "number"],
+                    "description": "New position for the checklist (top, bottom, or a positive number)"
+                }
+            },
+            "required": ["checklistId", "position"]
+        }
+    },
+    {
+        "name": "get_checklist_board",
+        "description": "Get the board a checklist is on. Use this tool to find out which board a checklist belongs to.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "checklistId": {
+                    "type": "string",
+                    "description": "ID of the checklist"
+                }
+            },
+            "required": ["checklistId"]
+        }
+    },
+    {
+        "name": "get_checklist_card",
+        "description": "Get the card a checklist is on. Use this tool to find out which card a checklist belongs to.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "checklistId": {
+                    "type": "string",
+                    "description": "ID of the checklist"
+                }
+            },
+            "required": ["checklistId"]
+        }
+    },
+    {
+        "name": "update_checkitem_state_on_card",
+        "description": "Update a checkitem's state on a card. Use this tool to mark a checkitem as complete or incomplete.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "cardId": {
+                    "type": "string",
+                    "description": "ID of the card"
+                },
+                "checkItemId": {
+                    "type": "string",
+                    "description": "ID of the checkitem"
+                },
+                "state": {
+                    "type": "string",
+                    "enum": ["complete", "incomplete"],
+                    "description": "New state for the checkitem"
+                }
+            },
+            "required": ["cardId", "checkItemId", "state"]
+        }
+    },
+    {
+        "name": "get_label",
+        "description": "Retrieve detailed information about a specific label by ID. Use this when you need comprehensive details about a particular label.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "labelId": {
+                    "type": "string",
+                    "description": "ID of the label to retrieve"
+                }
+            },
+            "required": ["labelId"]
+        }
+    },
+    {
+        "name": "create_label",
+        "description": "Create a new label on a board. Use this tool when you need to add a new label to a board for categorizing cards.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "boardId": {
+                    "type": "string",
+                    "description": "ID of the board"
+                },
+                "name": {
+                    "type": "string",
+                    "description": "Name of the label"
+                },
+                "color": {
+                    "type": ["string", "null"],
+                    "enum": ["green", "yellow", "orange", "red", "purple", "blue", "sky", "lime", "pink", "black", null],
+                    "description": "Color of the label, or null for no color"
+                }
+            },
+            "required": ["boardId", "name", "color"]
+        }
+    },
+    {
+        "name": "update_label",
+        "description": "Update an existing label with new properties. Use this tool to modify a label's name or color.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "labelId": {
+                    "type": "string",
+                    "description": "ID of the label to update"
+                },
+                "name": {
+                    "type": "string",
+                    "description": "New name for the label"
+                },
+                "color": {
+                    "type": ["string", "null"],
+                    "enum": ["green", "yellow", "orange", "red", "purple", "blue", "sky", "lime", "pink", "black", null],
+                    "description": "New color for the label, or null for no color"
+                }
+            },
+            "required": ["labelId"]
+        }
+    },
+    {
+        "name": "delete_label",
+        "description": "Permanently delete a label. Use this tool with caution as deletion cannot be undone.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "labelId": {
+                    "type": "string",
+                    "description": "ID of the label to delete"
+                },
+                "confirm": {
+                    "type": "boolean",
+                    "description": "Confirmation flag to prevent accidental deletion"
+                }
+            },
+            "required": ["labelId", "confirm"]
+        }
+    },
+    {
+        "name": "get_board_labels",
+        "description": "Get all labels on a board. Use this tool to see the available labels on a board.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "boardId": {
+                    "type": "string",
+                    "description": "ID of the board"
+                }
+            },
+            "required": ["boardId"]
+        }
+    },
+    {
+        "name": "update_label_name",
+        "description": "Update the name of a label. Use this tool to rename a label.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "labelId": {
+                    "type": "string",
+                    "description": "ID of the label"
+                },
+                "name": {
+                    "type": "string",
+                    "description": "New name for the label"
+                }
+            },
+            "required": ["labelId", "name"]
+        }
+    },
+    {
+        "name": "update_label_color",
+        "description": "Update the color of a label. Use this tool to change the color of a label.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "labelId": {
+                    "type": "string",
+                    "description": "ID of the label"
+                },
+                "color": {
+                    "type": ["string", "null"],
+                    "enum": ["green", "yellow", "orange", "red", "purple", "blue", "sky", "lime", "pink", "black", null],
+                    "description": "New color for the label, or null for no color"
+                }
+            },
+            "required": ["labelId", "color"]
+        }
+    },
+    {
+        "name": "create_label_on_card",
+        "description": "Create a new label directly on a card. Use this tool to add a new label to a card without adding it to the board first.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "cardId": {
+                    "type": "string",
+                    "description": "ID of the card"
+                },
+                "name": {
+                    "type": "string",
+                    "description": "Name of the label"
+                },
+                "color": {
+                    "type": ["string", "null"],
+                    "enum": ["green", "yellow", "orange", "red", "purple", "blue", "sky", "lime", "pink", "black", null],
+                    "description": "Color of the label, or null for no color"
+                }
+            },
+            "required": ["cardId", "name", "color"]
+        }
+    },
+    {
+        "name": "get_card_labels",
+        "description": "Get all labels on a card. Use this tool to see the labels applied to a card.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "cardId": {
+                    "type": "string",
+                    "description": "ID of the card"
+                }
+            },
+            "required": ["cardId"]
+        }
+    },
+    {
+        "name": "add_label_to_card",
+        "description": "Add a label to a card. Use this tool to categorize a card with an existing label.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "cardId": {
+                    "type": "string",
+                    "description": "ID of the card"
+                },
+                "labelId": {
+                    "type": "string",
+                    "description": "ID of the label to add"
+                }
+            },
+            "required": ["cardId", "labelId"]
+        }
+    },
+    {
+        "name": "remove_label_from_card",
+        "description": "Remove a label from a card. Use this tool to update the categorization of a card.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "cardId": {
+                    "type": "string",
+                    "description": "ID of the card"
+                },
+                "labelId": {
+                    "type": "string",
+                    "description": "ID of the label to remove"
+                }
+            },
+            "required": ["cardId", "labelId"]
+        }
+    },
+    {
+        "name": "get_list",
+        "description": "Retrieve detailed information about a specific list by ID. Use this when you need comprehensive details about a particular list.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "listId": {
+                    "type": "string",
+                    "description": "ID of the list to retrieve"
+                },
+                "fields": {
+                    "type": "array",
+                    "items": { "type": "string" },
+                    "description": "Specific fields to include in the response (default: all fields)"
+                }
+            },
+            "required": ["listId"]
+        }
+    },
+    {
+        "name": "create_list",
+        "description": "Create a new list on a board. Use this tool when you need to add a new list to a board.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "Name of the list"
+                },
+                "idBoard": {
+                    "type": "string",
+                    "description": "ID of the board the list should belong to"
+                },
+                "pos": {
+                    "type": ["string", "number"],
+                    "description": "Position of the list (top, bottom, or a positive number)"
+                }
+            },
+            "required": ["name", "idBoard"]
+        }
+    },
+    {
+        "name": "update_list",
+        "description": "Update an existing list with new properties. Use this tool to modify list details or settings.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "listId": {
+                    "type": "string",
+                    "description": "ID of the list to update"
+                },
+                "name": {
+                    "type": "string",
+                    "description": "New name for the list"
+                },
+                "closed": {
+                    "type": "boolean",
+                    "description": "Whether the list is closed (archived)"
+                },
+                "idBoard": {
+                    "type": "string",
+                    "description": "ID of the board the list should belong to"
+                },
+                "pos": {
+                    "type": ["string", "number"],
+                    "description": "Position of the list (top, bottom, or a positive number)"
+                },
+                "subscribed": {
+                    "type": "boolean",
+                    "description": "Whether the authenticated user is subscribed to the list"
+                }
+            },
+            "required": ["listId"]
+        }
+    },
+    {
+        "name": "archive_list",
+        "description": "Archive a list. Use this tool to archive a list without deleting it.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "listId": {
+                    "type": "string",
+                    "description": "ID of the list to archive"
+                }
+            },
+            "required": ["listId"]
+        }
+    },
+    {
+        "name": "unarchive_list",
+        "description": "Unarchive a list. Use this tool to restore a previously archived list.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "listId": {
+                    "type": "string",
+                    "description": "ID of the list to unarchive"
+                }
+            },
+            "required": ["listId"]
+        }
+    },
+    {
+        "name": "move_list_to_board",
+        "description": "Move a list to a different board. Use this tool to reorganize lists between boards.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "listId": {
+                    "type": "string",
+                    "description": "ID of the list to move"
+                },
+                "boardId": {
+                    "type": "string",
+                    "description": "ID of the destination board"
+                }
+            },
+            "required": ["listId", "boardId"]
+        }
+    },
+    {
+        "name": "get_cards_in_list",
+        "description": "Get all cards in a list. Use this tool to see the contents of a list.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "listId": {
+                    "type": "string",
+                    "description": "ID of the list"
+                },
+                "filter": {
+                    "type": "string",
+                    "enum": ["all", "closed", "none", "open"],
+                    "description": "Filter cards by status (default: open)"
+                }
+            },
+            "required": ["listId"]
+        }
+    },
+    {
+        "name": "archive_all_cards",
+        "description": "Archive all cards in a list. Use this tool to quickly archive all cards in a list.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "listId": {
+                    "type": "string",
+                    "description": "ID of the list"
+                }
+            },
+            "required": ["listId"]
+        }
+    },
+    {
+        "name": "move_all_cards",
+        "description": "Move all cards in a list to another list. Use this tool to quickly move all cards from one list to another.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "sourceListId": {
+                    "type": "string",
+                    "description": "ID of the source list"
+                },
+                "destinationListId": {
+                    "type": "string",
+                    "description": "ID of the destination list"
+                },
+                "boardId": {
+                    "type": "string",
+                    "description": "ID of the board (required by Trello API)"
+                }
+            },
+            "required": ["sourceListId", "destinationListId", "boardId"]
+        }
+    },
+    {
+        "name": "update_list_position",
+        "description": "Update the position of a list on a board. Use this tool to reorder lists on a board.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "listId": {
+                    "type": "string",
+                    "description": "ID of the list"
+                },
+                "position": {
+                    "type": ["string", "number"],
+                    "description": "New position for the list (top, bottom, or a positive number)"
+                }
+            },
+            "required": ["listId", "position"]
+        }
+    },
+    {
+        "name": "update_list_name",
+        "description": "Update the name of a list. Use this tool to rename a list.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "listId": {
+                    "type": "string",
+                    "description": "ID of the list"
+                },
+                "name": {
+                    "type": "string",
+                    "description": "New name for the list"
+                }
+            },
+            "required": ["listId", "name"]
+        }
+    },
+    {
+        "name": "subscribe_to_list",
+        "description": "Subscribe to a list. Use this tool to receive notifications about changes to a list.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "listId": {
+                    "type": "string",
+                    "description": "ID of the list"
+                },
+                "subscribed": {
+                    "type": "boolean",
+                    "description": "Whether to subscribe (true) or unsubscribe (false)"
+                }
+            },
+            "required": ["listId", "subscribed"]
+        }
+    },
+    {
+        "name": "get_me",
+        "description": "Retrieve information about the authenticated member (current user). Use this to get details about your own account.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "fields": {
+                    "type": "array",
+                    "items": { "type": "string" },
+                    "description": "Specific fields to include in the response (default: all fields)"
+                }
+            }
+        }
+    },
+    {
+        "name": "get_member",
+        "description": "Retrieve information about a specific member by ID or username. Use this to get details about another Trello user.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "memberIdOrUsername": {
+                    "type": "string",
+                    "description": "ID or username of the member to retrieve"
+                },
+                "fields": {
+                    "type": "array",
+                    "items": { "type": "string" },
+                    "description": "Specific fields to include in the response (default: all fields)"
+                }
+            },
+            "required": ["memberIdOrUsername"]
+        }
+    },
+    {
+        "name": "get_member_boards",
+        "description": "Get boards that a member belongs to. Use this to see what boards a member has access to.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "memberIdOrUsername": {
+                    "type": "string",
+                    "description": "ID or username of the member"
+                },
+                "filter": {
+                    "type": "string",
+                    "enum": ["all", "closed", "members", "open", "organization", "public", "starred"],
+                    "description": "Filter boards by status or membership (default: all)"
+                }
+            },
+            "required": ["memberIdOrUsername"]
+        }
+    },
+    {
+        "name": "get_member_cards",
+        "description": "Get cards assigned to a member. Use this to see what tasks a member is responsible for.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "memberIdOrUsername": {
+                    "type": "string",
+                    "description": "ID or username of the member"
+                }
+            },
+            "required": ["memberIdOrUsername"]
+        }
+    },
+    {
+        "name": "get_boards_invited",
+        "description": "Get boards that a member has been invited to. Use this to see pending board invitations.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "memberIdOrUsername": {
+                    "type": "string",
+                    "description": "ID or username of the member"
+                }
+            },
+            "required": ["memberIdOrUsername"]
+        }
+    },
+    {
+        "name": "get_member_organizations",
+        "description": "Get organizations that a member belongs to. Use this to see what workspaces a member is part of.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "memberIdOrUsername": {
+                    "type": "string",
+                    "description": "ID or username of the member"
+                }
+            },
+            "required": ["memberIdOrUsername"]
+        }
+    },
+    {
+        "name": "get_notifications",
+        "description": "Get notifications for the authenticated member. Use this to see recent activity and updates.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "filter": {
+                    "type": "string",
+                    "description": "Filter for notification types (comma-separated list)"
+                },
+                "readFilter": {
+                    "type": "string",
+                    "enum": ["all", "read", "unread"],
+                    "description": "Filter by read status (default: all)"
+                },
+                "limit": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 1000,
+                    "description": "Maximum number of notifications to return (max 1000, default: 50)"
+                }
+            }
+        }
+    },
+    {
+        "name": "update_me",
+        "description": "Update the authenticated member's information. Use this to modify your own profile details.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "fullName": {
+                    "type": "string",
+                    "description": "New full name for the member"
+                },
+                "initials": {
+                    "type": "string",
+                    "description": "New initials for the member"
+                },
+                "username": {
+                    "type": "string",
+                    "description": "New username for the member"
+                },
+                "bio": {
+                    "type": "string",
+                    "description": "New bio for the member"
+                },
+                "avatarSource": {
+                    "type": "string",
+                    "enum": ["gravatar", "upload", "none"],
+                    "description": "Avatar source for the member"
+                },
+                "prefs": {
+                    "type": "object",
+                    "properties": {
+                        "colorBlind": {
+                            "type": "boolean",
+                            "description": "Whether the member is color blind"
+                        },
+                        "locale": {
+                            "type": "string",
+                            "description": "Locale for the member"
+                        },
+                        "minutesBetweenSummaries": {
+                            "type": "integer",
+                            "description": "Minutes between email summaries"
+                        }
+                    },
+                    "description": "Member preferences"
+                }
+            }
+        }
+    },
+    {
+        "name": "get_avatar",
+        "description": "Get the authenticated member's avatar. Use this to retrieve the profile picture URL.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "size": {
+                    "type": ["string", "integer"],
+                    "enum": ["30", "50", "170", "original"],
+                    "description": "Size of the avatar (30, 50, 170, or original) (default: original)"
+                }
+            }
+        }
+    },
+    {
+        "name": "search_members",
+        "description": "Search for members by name. Use this to find Trello users by their name or username.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "query": {
+                    "type": "string",
+                    "description": "Search query"
+                },
+                "limit": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 20,
+                    "description": "Maximum number of results to return (max 20, default: 8)"
+                }
+            },
+            "required": ["query"]
+        }
+    },
+    {
+        "name": "get_board_members",
+        "description": "Get members of a board. Use this to see who has access to a board.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "boardId": {
+                    "type": "string",
+                    "description": "ID of the board"
+                }
+            },
+            "required": ["boardId"]
+        }
+    },
+    {
+        "name": "get_organization_members",
+        "description": "Get members of an organization. Use this to see who belongs to a workspace.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "organizationId": {
+                    "type": "string",
+                    "description": "ID of the organization"
+                }
+            },
+            "required": ["organizationId"]
+        }
+    },
+    {
+        "name": "get_card_members",
+        "description": "Get members assigned to a card. Use this to see who is responsible for a task.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "cardId": {
+                    "type": "string",
+                    "description": "ID of the card"
+                }
+            },
+            "required": ["cardId"]
+        }
+    }
+]
